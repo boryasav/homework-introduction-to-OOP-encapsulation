@@ -17,30 +17,37 @@ public class App {
         basket1.addProduct(p5);
         basket1.addProduct(p5);
         basket1.addProduct(p3);
+
+        System.out.println("\n\"лишний\" addProduct (в basket1 нет свободного места):");
         basket1.addProduct(p4);
 
         ProductBasket basket2 = new ProductBasket();
         basket2.addProduct(p2);
         basket2.addProduct(p3);
 
+        System.out.println("\nbasket 1:");
         basket1.printBasket();
+
+        System.out.println("\nbasket 2:");
         basket2.printBasket();
 
         int totalPriceBasket1 = basket1.getTotalPrice();
         int totalPriceBasket2 = basket2.getTotalPrice();
-        System.out.println("totalPriceBasket1 = " + totalPriceBasket1 + "totalPriceBasket2 = " + totalPriceBasket2);
+        System.out.println("\ntotalPriceBasket1 = " + totalPriceBasket1 + "\ntotalPriceBasket2 = " + totalPriceBasket2);
 
         boolean productInBasket = basket1.containsProduct("майка");
         boolean productNotInBasket = basket2.containsProduct("футболка базовая");
-        System.out.println("productInBasket = " + productInBasket + "\nproductNotInBasket = " + productNotInBasket);
+        System.out.println("\nproductInBasket = " + productInBasket + "\nproductNotInBasket = " + productNotInBasket);
 
         basket1.clearBasket();
+        System.out.println("\n* clear basket1 *");
 
+        System.out.println("\nbasket 1:");
         basket1.printBasket();
 
         totalPriceBasket1 = basket1.getTotalPrice();
-        System.out.println("totalPriceBasket1 = " + totalPriceBasket1);
+        System.out.println("\ntotalPriceBasket1 = " + totalPriceBasket1);
 
-        System.out.println(basket1.containsProduct("футболка oversize"));
+        System.out.println("\n" + basket1.containsProduct("футболка oversize"));
     }
 }
