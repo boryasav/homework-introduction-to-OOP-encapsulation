@@ -1,15 +1,18 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.basket.ProductBasket;
-import org.skypro.skyshop.product.Product;
+//import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.FixPriceProduct;
+import org.skypro.skyshop.product.SimpleProduct;
 
 public class App {
     public static void main(String[] args) {
-        Product p1 = new Product("футболка базовая", 3190);
-        Product p2 = new Product("шорты", 1990);
-        Product p3 = new Product("майка", 2590);
-        Product p4 = new Product("брюки", 2590);
-        Product p5 = new Product("футболка oversize", 3490);
+        FixPriceProduct p1 = new FixPriceProduct("футболка базовая");
+        SimpleProduct p2 = new SimpleProduct("шорты", 1990);
+        DiscountedProduct p3 = new DiscountedProduct("майка", 2590, 10);
+        SimpleProduct p4 = new SimpleProduct("брюки", 2590);
+        FixPriceProduct p5 = new FixPriceProduct("футболка oversize");
 
         ProductBasket basket1 = new ProductBasket();
         basket1.addProduct(p1);
@@ -35,9 +38,9 @@ public class App {
         int totalPriceBasket2 = basket2.getTotalPrice();
         System.out.println("\ntotalPriceBasket1 = " + totalPriceBasket1 + "\ntotalPriceBasket2 = " + totalPriceBasket2);
 
-        boolean productInBasket = basket1.containsProduct("майка");
-        boolean productNotInBasket = basket2.containsProduct("футболка базовая");
-        System.out.println("\nproductInBasket = " + productInBasket + "\nproductNotInBasket = " + productNotInBasket);
+        boolean SimpleProductInBasket = basket1.containsProduct("майка");
+        boolean SimpleProductNotInBasket = basket2.containsProduct("футболка базовая");
+        System.out.println("\nproductInBasket = " + SimpleProductInBasket + "\nproductNotInBasket = " + SimpleProductNotInBasket);
 
         basket1.clearBasket();
         System.out.println("\n* clear basket1 *");
