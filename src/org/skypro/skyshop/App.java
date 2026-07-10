@@ -1,10 +1,13 @@
 package org.skypro.skyshop;
 
+import org.skypro.skyshop.article.Article;
 import org.skypro.skyshop.basket.ProductBasket;
-//import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.search.SearchEngine;
+
+import java.util.Arrays;
 
 public class App {
     public static void main(String[] args) {
@@ -52,5 +55,50 @@ public class App {
         System.out.println("\ntotalPriceBasket1 = " + totalPriceBasket1);
 
         System.out.println("\n" + basket1.containsProduct("футболка oversize"));
+
+        SearchEngine searchEngine = new SearchEngine(100);
+        searchEngine.add(p1);
+        searchEngine.add(p2);
+        searchEngine.add(p3);
+        searchEngine.add(p4);
+        searchEngine.add(p5);
+
+        Article a1 = new Article("\nКакой трикотаж мы используем?".toUpperCase(),
+                "Футер 3-х нитка — это плотный, теплый и формоустойчивый трикотаж.\n" +
+                "Лицевая сторона гладкая и ровная, а изнаночная — объемная, с крупными вязаными петлями.\n" +
+                p5 + "\n" +
+                "состав: 80% хлопка и 20% лайкры.\n" +
+                "Плотность 350 г/м2 — отлично сохраняет тепло, пропускает воздух, устойчив к деформации и пилингу (образовыванию катышков)\n");
+
+        Article a2 = new Article("\nраспродажа в следующую среду".toUpperCase(),
+                "Только один день, только одна среда\n" +
+                        "Скидка 20% на весь низ из нашего каталога:\n" +
+                        new DiscountedProduct(p2.getName(), p2.getPrice(), 20) + "\n" +
+                        new DiscountedProduct(p4.getName(), p4.getPrice(), 20) + "\n" +
+                        "Успейте сделать правильный выбор!\n");
+
+        searchEngine.add(a1);
+        searchEngine.add(a2);
+
+        String searchTerm;
+
+        searchTerm = "футболка";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+
+        searchTerm = "ФУ";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+
+        searchTerm = "ниЗ";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+
+        searchTerm = "шорты";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+
+        searchTerm = "майка";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+
+        searchTerm = "джинс";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+
     }
 }
