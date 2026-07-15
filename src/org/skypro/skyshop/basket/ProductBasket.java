@@ -2,48 +2,56 @@ package org.skypro.skyshop.basket;
 
 import org.skypro.skyshop.product.Product;
 
-import java.util.Arrays;
-import java.util.Objects;
+import java.util.*;
 
 public class ProductBasket {
 
-    private static final int BASKET_SIZE = 5;
-
-    private final Product[] basket;
-
-    // одновременно и индекс ближайшей свободной ячейки массива (куда будет "помещаться" новый продукт в корзине)
-    // и фактическое кол-во продуктов в корзине (без учёта null)
-    private int size;
+    private final LinkedList<Product> basket;
 
     public ProductBasket() {
-        basket = new Product[BASKET_SIZE];
+        basket = new LinkedList<>();
     }
 
     public void addProduct(Product product) {
-        if (size >= BASKET_SIZE)
-            System.out.println("Невозможно добавить продукт");
-        else {
-            basket[size] = product;
-            size++;
+        if (product == null) {
+            throw new IllegalArgumentException("Product не может быть null");
         }
+        basket.add(product);
+    }
+
+    public List<Product> removeProduct(String name) {
+        List<Product> removedProducts = new ArrayList<>();
+
+        Iterator<Product> iterator = basket.iterator();
+
+        while (iterator.hasNext()) {
+            Product product = iterator.next();
+            if (Objects.equals(product.getName(), name)) {
+                removedProducts.add(product);
+                iterator.remove();
+            }
+        }
+        return removedProducts;
     }
 
     public int getTotalPrice() {
         int sum = 0;
-        for (int i = 0; i < size; i++) {
-            sum += basket[i].getPrice();
+        for (Product product : basket) {
+            sum += product.getPrice();
         }
         return sum;
     }
 
     public void printBasket() {
-        if (size == 0) {
-            System.out.println("в корзине пусто");
+        System.out.println();
+
+        if (basket.isEmpty()) {
+            System.out.println("В корзине пусто");
             return;
         }
 
-        for (int i = 0; i < size; i++) {
-            System.out.println(basket[i]);
+        for (Product product : basket) {
+            System.out.println(product);
         }
 
         System.out.println("Итого: " + getTotalPrice());
@@ -52,23 +60,22 @@ public class ProductBasket {
 
     public int counterSpecialProducts() {
         int counter = 0;
-        for (int i = 0; i < size; i++) {
-            if (basket[i].isSpecial())
+        for (Product product : basket) {
+            if (product.isSpecial())
                 counter++;
         }
         return counter;
     }
 
     public boolean containsProduct(String productName) {
-        for (int i = 0; i < size; i++) {
-            if (Objects.equals(basket[i].getName(), productName))
+        for (Product product : basket) {
+            if (Objects.equals(product.getName(), productName))
                 return true;
         }
         return false;
     }
 
     public void clearBasket() {
-        Arrays.fill(basket, null);  // Intellij IDEA сама мне предложила использовать метод класса Arrays
-        size = 0;
+        basket.clear();
     }
 }
