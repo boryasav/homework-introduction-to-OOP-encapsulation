@@ -14,28 +14,28 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) {
-        FixPriceProduct p1 = new FixPriceProduct("футболка базовая");
-        SimpleProduct p2 = new SimpleProduct("шорты", 1990);
-        DiscountedProduct p3 = new DiscountedProduct("майка", 2590, 10);
-        SimpleProduct p4 = new SimpleProduct("брюки", 2590);
-        FixPriceProduct p5 = new FixPriceProduct("футболка oversize");
+        FixPriceProduct tShirtBase = new FixPriceProduct("футболка базовая");
+        FixPriceProduct tShirtOversize = new FixPriceProduct("футболка оверсайз");
+        SimpleProduct shorts = new SimpleProduct("шорты", 1990);
+        SimpleProduct pants = new SimpleProduct("брюки", 2590);
+        DiscountedProduct tankTopDiscounted = new DiscountedProduct("майка", 2590, 10);
 
         ProductBasket basket1 = new ProductBasket();
-        basket1.addProduct(p1);
-        basket1.addProduct(p1);
-        basket1.addProduct(p5);
-        basket1.addProduct(p5);
-        basket1.addProduct(p3);
-        basket1.addProduct(p4);
+        basket1.addProduct(tShirtBase);
+        basket1.addProduct(tShirtBase);
+        basket1.addProduct(tShirtOversize);
+        basket1.addProduct(tShirtOversize);
+        basket1.addProduct(tankTopDiscounted);
+        basket1.addProduct(pants);
 
         ProductBasket basket2 = new ProductBasket();
-        basket2.addProduct(p2);
-        basket2.addProduct(p3);
+        basket2.addProduct(shorts);
+        basket2.addProduct(tankTopDiscounted);
 
-        System.out.println("\nbasket 1:");
+        System.out.print("\nbasket 1:");
         basket1.printBasket();
 
-        System.out.println("\nbasket 2:");
+        System.out.print("\nbasket 2:");
         basket2.printBasket();
 
         int totalPriceBasket1 = basket1.getTotalPrice();
@@ -55,46 +55,45 @@ public class App {
 
         System.out.println("\ncontainsProduct = " + basket1.containsProduct("футболка oversize"));
 
+
         SearchEngine searchEngine = new SearchEngine();
-        searchEngine.add(p1);
-        searchEngine.add(p2);
-        searchEngine.add(p3);
-        searchEngine.add(p4);
-        searchEngine.add(p5);
+        searchEngine.add(tShirtBase);
+        searchEngine.add(shorts);
+        searchEngine.add(tankTopDiscounted);
+        searchEngine.add(pants);
+        searchEngine.add(tShirtOversize);
 
-        Article a1 = new Article("\nКакой трикотаж мы используем?".toUpperCase(),
-                "Футер 3-х нитка — это плотный, теплый и формоустойчивый трикотаж.\n" +
-                "Лицевая сторона гладкая и ровная, а изнаночная — объемная, с крупными вязаными петлями.\n" +
-                p5 + "\n" +
-                "состав: 80% хлопка и 20% лайкры.\n" +
-                "Плотность 350 г/м2 — отлично сохраняет тепло, пропускает воздух, устойчив к деформации и пилингу (образовыванию катышков)\n");
+        Article a1 = new Article("трикотаж футболок",
+                "Футер 3-х нитка — это тёплый, плотный и устойчивый к деформации и пилингу трикотаж. " +
+                "Состав: 80% хлопка и 20% лайкры. Плотность 350 г/м2.");
 
-        Article a2 = new Article("\nраспродажа в следующую среду".toUpperCase(),
-                "Только один день, только одна среда\n" +
-                        "Скидка 20% на весь низ из нашего каталога:\n" +
-                        new DiscountedProduct(p2.getName(), p2.getPrice(), 20) + "\n" +
-                        new DiscountedProduct(p4.getName(), p4.getPrice(), 20) + "\n" +
-                        "Успейте сделать правильный выбор!\n");
+        Article a2 = new Article("распродажа в следующую среду",
+                "Только один день скидка 20% на весь низ из нашего каталога — " +
+                        new DiscountedProduct(shorts.getName(), shorts.getPrice(), 20) + " и " +
+                        new DiscountedProduct(pants.getName(), pants.getPrice(), 20) + ". " +
+                        "Не упускайте выгоду!");
 
         searchEngine.add(a1);
         searchEngine.add(a2);
 
-        // метод поиска
+
+        System.out.println("\nМЕТОД ПОИСКА search()");
         String searchTerm;
 
         searchTerm = "ФУтб";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)));
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)).values());
 
-        searchTerm = "ниЗ";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)));
+        searchTerm = "шорты";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)).values());
 
         searchTerm = "майка";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)));
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)).values());
 
         searchTerm = "джинс";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)) + "\n");
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)).values());
 
-        // создание новых продуктов с неправильными полями
+
+        System.out.println("\n\nСОЗДАНИЕ НОВЫХ ПРОДУКТОВ С НЕПРАВИЛЬНЫМИ ПОЛЯМИ");
         try {
             new SimpleProduct("кепка", 0);
         } catch (IllegalArgumentException exception) {
@@ -113,13 +112,14 @@ public class App {
             System.out.println("\n" + exception.getMessage());
         }
 
-        // метод поиска самого подходящего элемента
+
+        System.out.println("\n\nМЕТОД ПОИСКА САМОГО ПОДХОДЯЩЕГО ЭЛЕМЕНТА searchBestMatch()");
         Searchable resultSearch;
 
         try {
             searchTerm = "скидки";
             resultSearch = searchEngine.searchBestMatch(searchTerm);
-            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\": " + resultSearch);
+            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\":\n" + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
@@ -127,7 +127,7 @@ public class App {
         try {
             searchTerm = "скидк";
             resultSearch = searchEngine.searchBestMatch(searchTerm);
-            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\": " + resultSearch);
+            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\":\n" + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
@@ -135,21 +135,30 @@ public class App {
         try {
             searchTerm = "ФУТБОЛ";
             resultSearch = searchEngine.searchBestMatch(searchTerm);
-            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\": " + resultSearch);
+            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\":\n" + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
+
+
+        System.out.println("\n\nМЕТОД УДАЛЕНИЯ ПРОДУКТОВ ИЗ КОРЗИНЫ removedProduct()");
+
+        basket2.addProduct(new SimpleProduct(tankTopDiscounted.getName(), tankTopDiscounted.getBasePrice()));
+        System.out.print("\nbasket 2:");
+        basket2.printBasket();
 
         List<Product> removedProduct;
 
         removedProduct = basket2.removeProduct("майка");
         System.out.println("\nУдалённые продукты: " + removedProduct);
 
+        System.out.print("\nbasket 2:");
         basket2.printBasket();
 
         removedProduct = basket2.removeProduct("джинсы");
-        if (removedProduct.isEmpty()) System.out.println("\nСписок удалённых товаров пуст: " + removedProduct);
+        if (removedProduct.isEmpty()) System.out.println("\nСписок удалённых товаров пуст");
 
+        System.out.print("\nbasket 2:");
         basket2.printBasket();
 
     }
