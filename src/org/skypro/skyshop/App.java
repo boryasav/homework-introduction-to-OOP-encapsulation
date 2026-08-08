@@ -39,21 +39,21 @@ public class App {
         Product tankTopBaseDiscounted = new DiscountedProduct(tankTopBase.getName(), tankTopBase.getPrice(), 15);
 
         ProductBasket basket1 = new ProductBasket();
-        basket1.addProduct(tShirtBase);
-        basket1.addProduct(tShirtBase);
-        basket1.addProduct(tShirtOversize);
-        basket1.addProduct(tShirtOversize);
-        basket1.addProduct(shortsSport);
-        basket1.addProduct(shortsLinen);
-        basket1.addProduct(tankTopBaseDiscounted);
+        basket1.add(tShirtBase);
+        basket1.add(tShirtBase);
+        basket1.add(tShirtOversize);
+        basket1.add(tShirtOversize);
+        basket1.add(shortsSport);
+        basket1.add(shortsLinen);
+        basket1.add(tankTopBaseDiscounted);
 
         ProductBasket basket2 = new ProductBasket();
-        basket2.addProduct(tShirtLinen);
-        basket2.addProduct(tShirtBase);
-        basket2.addProduct(tShirtBase);
-        basket2.addProduct(shortsLinen);
-        basket2.addProduct(tankTopBaseDiscounted);
-        basket2.addProduct(tankTopBase);
+        basket2.add(tShirtLinen);
+        basket2.add(tShirtBase);
+        basket2.add(tShirtBase);
+        basket2.add(shortsLinen);
+        basket2.add(tankTopBaseDiscounted);
+        basket2.add(tankTopBase);
 
         basket1.printBasket("корзина 1");
         basket2.printBasket("корзина 2");
@@ -101,10 +101,10 @@ public class App {
         basket2.printBasket("корзина 2 до удаления");
 
         productName = tankTopBase.getName();
-        System.out.println("\nУдалённые товары по названию \"" + productName + "\": " + basket2.removeProduct(productName));
+        System.out.println("\nУдалённые товары по названию \"" + productName + "\": " + basket2.remove(productName));
 
         productName = shortsSport.getName();
-        if (basket2.removeProduct(productName).isEmpty())
+        if (basket2.remove(productName).isEmpty())
             System.out.println("\nСписок удалённых товаров по названию \"" + productName + "\" пуст");
 
         basket2.printBasket("корзина 2 после удаления");
@@ -115,21 +115,21 @@ public class App {
         String searchTerm;
         try {
             searchTerm = "футболк";
-            resultSearch = searchEngine.searchBestMatch(searchTerm);
+            resultSearch = searchEngine.getBestMatch(searchTerm);
             System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\":\n" + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
         try {
             searchTerm = "бри";
-            resultSearch = searchEngine.searchBestMatch(searchTerm);
+            resultSearch = searchEngine.getBestMatch(searchTerm);
             System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\":\n" + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
         try {
             searchTerm = "ш";
-            resultSearch = searchEngine.searchBestMatch(searchTerm);
+            resultSearch = searchEngine.getBestMatch(searchTerm);
             System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\":\n" + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());

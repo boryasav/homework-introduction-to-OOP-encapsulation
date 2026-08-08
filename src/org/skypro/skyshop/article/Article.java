@@ -10,13 +10,18 @@ public class Article implements Searchable {
     private final String text;
 
     public Article(String title, String text) {
-        this.title = Objects.requireNonNull(title, "Название статьи не может быть null").toUpperCase();
-        this.text = text;
+        Objects.requireNonNull(title, "Название статьи не может быть null");
+        if (title.isBlank()) {throw new IllegalArgumentException("Название статьи не может быть пустой строкой");}
+        this.title = title.trim().toUpperCase();
+
+        Objects.requireNonNull(text, "Текст статьи не может быть null");
+        if (text.isBlank()) {throw new IllegalArgumentException("Текст статьи не может быть пустой строкой");}
+        this.text = text.trim();
     }
 
     @Override
     public String getSearchTerm() {
-        return toString();
+        return toString().toLowerCase();
     }
 
     @Override

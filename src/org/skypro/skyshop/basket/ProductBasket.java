@@ -12,15 +12,14 @@ public class ProductBasket {
         basket = new HashMap<>();
     }
 
-    public void addProduct(Product product) {
+    public void add(Product product) {
         Objects.requireNonNull(product, "Передаваемый Product не может быть null");
 
-        String productName = product.getName();
-        List<Product> productsList = basket.computeIfAbsent(productName, k -> new ArrayList<>());
+        List<Product> productsList = basket.computeIfAbsent(product.getName(), k -> new ArrayList<>());
         productsList.add(product);
     }
 
-    public List<Product> removeProduct(String name) {
+    public List<Product> remove(String name) {
         List<Product> removedProducts = basket.remove(name);
         if (removedProducts == null) {
             removedProducts = Collections.emptyList();
@@ -37,24 +36,10 @@ public class ProductBasket {
     }
 
     public int getTotalPrice() {
-        int total = 0;
-        for (List<Product> productList : basket.values()) {
-            for (Product product : productList) {
-                total += product.getPrice();
-            }
-        }
-        return total;
-    }
-
-    private int countSpecialProducts() {
-        int counter = 0;
-        for (List<Product> productList : basket.values()) {
-            for (Product product : productList) {
-                if (product.isSpecial())
-                    counter++;
-            }
-        }
-        return counter;
+        return basket.values().stream()
+                .flatMap(Collection::stream)
+                .mapToInt(Product::getPrice)
+                .sum();
     }
 
     public void printBasket() {
@@ -68,13 +53,18 @@ public class ProductBasket {
         if (basket.isEmpty()) {
             System.out.println("В корзине пусто");
         } else {
-            for (List<Product> productList : basket.values()) {
-                for (Product product : productList) {
-                    System.out.println(product);
-                }
-            }
+            basket.values().stream()
+                    .flatMap(Collection::stream)
+                    .forEach(System.out::println);
             System.out.println("Итого: " + getTotalPrice());
-            System.out.println("Специальных товаров: " + countSpecialProducts());
+            System.out.println("Специальных товаров: " + getSpecialCount());
         }
+    }
+
+    private long getSpecialCount() {
+        return basket.values().stream()
+                .flatMap(Collection::stream)
+                .filter(Product::isSpecial)
+                .count();
     }
 }

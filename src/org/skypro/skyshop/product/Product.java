@@ -10,15 +10,13 @@ public abstract class Product implements Searchable {
 
     public Product(String name) {
         Objects.requireNonNull(name, "Название продукта не может быть null");
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("Название продукта не может быть пустой строкой");
-        }
-        this.name = name;
+        if (name.isBlank()) {throw new IllegalArgumentException("Название продукта не может быть пустой строкой");}
+        this.name = name.trim();
     }
 
     @Override
     public String getSearchTerm() {
-        return name;
+        return name.toLowerCase();
     }
 
     @Override

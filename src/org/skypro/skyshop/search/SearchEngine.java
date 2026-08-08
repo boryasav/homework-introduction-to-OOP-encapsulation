@@ -3,6 +3,8 @@ package org.skypro.skyshop.search;
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 
 public class SearchEngine {
 
@@ -18,46 +20,49 @@ public class SearchEngine {
     }
 
     public Set<Searchable> search(String searchTerm) {
-        Objects.requireNonNull(searchTerm, "Передаваемый объект не может быть null");
-
-        Set<Searchable> results = new TreeSet<>(new SearchableComparator());
-        for (Searchable searchable : searchables) {
-            if (searchable != null && (searchable.getSearchTerm().toLowerCase()).contains(searchTerm.toLowerCase())) {
-                results.add(searchable);
-            }
-        }
-        return results;
+        final String normalizedSearchTerm = normalizeSearchTerm(searchTerm);
+        return searchables.stream()
+                .filter(s -> s.getSearchTerm().contains(normalizedSearchTerm))
+                .collect(Collectors.toCollection(() -> new TreeSet<>(new SearchableComparator())));
     }
 
-    public Searchable searchBestMatch(String searchTerm) throws BestResultNotFound {
-        Objects.requireNonNull(searchTerm, "Передаваемый объект не может быть null");
-
-        Searchable result = null;
+    public Searchable getBestMatch(String searchTerm) throws BestResultNotFound {
+        String normalizedSearchTerm = normalizeSearchTerm(searchTerm);
+        Searchable bestMatch = null;
         int maxCount = 0;
         for (Searchable searchable : searchables) {
-            if (searchable != null) {
-                int count = countMatches(searchable.getSearchTerm().toLowerCase(), searchTerm.toLowerCase());
-                if (count > maxCount) {
-                    maxCount = count;
-                    result = searchable;
-                }
+            int count = countMatches(searchable.getSearchTerm(), normalizedSearchTerm);
+            if (count > maxCount) {
+                maxCount = count;
+                bestMatch = searchable;
             }
         }
-        if (result == null) {
+        if (bestMatch == null) {
             throw new BestResultNotFound("\nПо запросу \"" + searchTerm + "\" ничего не найдено");
         }
-        return result;
+        return bestMatch;
     }
 
-    private int countMatches(String string, String substring) {
+    private int countMatches(String text, String searchTerm) {
         int count = 0;
         int index = 0;
-        int indexSubstring = string.indexOf(substring, index);
+        int indexSubstring = text.indexOf(searchTerm, index);
         while (indexSubstring != -1) {
             count++;
-            index = indexSubstring + substring.length();
-            indexSubstring = string.indexOf(substring, index);
+            index = indexSubstring + searchTerm.length();
+            indexSubstring = text.indexOf(searchTerm, index);
         }
         return count;
+    }
+
+    private String normalizeSearchTerm(String searchTerm) {
+        searchTerm = Objects.requireNonNull(
+                searchTerm,
+                "Поисковый запрос не может быть null")
+                .trim().toLowerCase();
+        if (searchTerm.isBlank()) {
+            throw new IllegalArgumentException("Поисковый запрос не может быть пустой строкой");
+        }
+        return searchTerm;
     }
 }
