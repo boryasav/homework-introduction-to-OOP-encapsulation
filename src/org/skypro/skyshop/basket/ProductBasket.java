@@ -16,12 +16,10 @@ public class ProductBasket {
     private int size;
 
     public ProductBasket() {
-
         basket = new Product[BASKET_SIZE];
     }
 
     public void addProduct(Product product) {
-
         if (size >= BASKET_SIZE)
             System.out.println("Невозможно добавить продукт");
         else {
@@ -31,9 +29,7 @@ public class ProductBasket {
     }
 
     public int getTotalPrice() {
-
         int sum = 0;
-
         for (int i = 0; i < size; i++) {
             sum += basket[i].getPrice();
         }
@@ -41,22 +37,30 @@ public class ProductBasket {
     }
 
     public void printBasket() {
-
         if (size == 0) {
             System.out.println("в корзине пусто");
             return;
         }
+
         for (int i = 0; i < size; i++) {
-            System.out.println(basket[i].getName() + ": " + basket[i].getPrice());
+            System.out.println(basket[i]);
         }
 
         System.out.println("Итого: " + getTotalPrice());
+        System.out.println("Специальных товаров: " + counterSpecialProducts());
+    }
+
+    public int counterSpecialProducts() {
+        int counter = 0;
+        for (int i = 0; i < size; i++) {
+            if (basket[i].isSpecial())
+                counter++;
+        }
+        return counter;
     }
 
     public boolean containsProduct(String productName) {
-
         for (int i = 0; i < size; i++) {
-
             if (Objects.equals(basket[i].getName(), productName))
                 return true;
         }
@@ -64,7 +68,6 @@ public class ProductBasket {
     }
 
     public void clearBasket() {
-
         Arrays.fill(basket, null);  // Intellij IDEA сама мне предложила использовать метод класса Arrays
         size = 0;
     }
