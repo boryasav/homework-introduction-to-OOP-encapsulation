@@ -5,10 +5,12 @@ import org.skypro.skyshop.basket.ProductBasket;
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
+import org.skypro.skyshop.product.Product;
 import org.skypro.skyshop.product.SimpleProduct;
 import org.skypro.skyshop.search.SearchEngine;
+import org.skypro.skyshop.search.Searchable;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -24,8 +26,6 @@ public class App {
         basket1.addProduct(p5);
         basket1.addProduct(p5);
         basket1.addProduct(p3);
-
-        System.out.println("\n\"лишний\" addProduct (в basket1 нет свободного места):");
         basket1.addProduct(p4);
 
         ProductBasket basket2 = new ProductBasket();
@@ -46,18 +46,16 @@ public class App {
         boolean SimpleProductNotInBasket = basket2.containsProduct("футболка базовая");
         System.out.println("\nproductInBasket = " + SimpleProductInBasket + "\nproductNotInBasket = " + SimpleProductNotInBasket);
 
+        System.out.print("\nОчищеная корзина basket 1:");
         basket1.clearBasket();
-        System.out.println("\n* clear basket1 *");
-
-        System.out.println("\nbasket 1:");
         basket1.printBasket();
 
         totalPriceBasket1 = basket1.getTotalPrice();
         System.out.println("\ntotalPriceBasket1 = " + totalPriceBasket1);
 
-        System.out.println("\n" + basket1.containsProduct("футболка oversize"));
+        System.out.println("\ncontainsProduct = " + basket1.containsProduct("футболка oversize"));
 
-        SearchEngine searchEngine = new SearchEngine(100);
+        SearchEngine searchEngine = new SearchEngine();
         searchEngine.add(p1);
         searchEngine.add(p2);
         searchEngine.add(p3);
@@ -81,66 +79,78 @@ public class App {
         searchEngine.add(a1);
         searchEngine.add(a2);
 
+        // метод поиска
         String searchTerm;
 
-        searchTerm = "футболка";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
-
-        searchTerm = "ФУ";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+        searchTerm = "ФУтб";
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)));
 
         searchTerm = "ниЗ";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
-
-        searchTerm = "шорты";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)));
 
         searchTerm = "майка";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)));
 
         searchTerm = "джинс";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)) + "\n");
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + (searchEngine.search(searchTerm)) + "\n");
 
         // создание новых продуктов с неправильными полями
         try {
-            SimpleProduct p6 = new SimpleProduct("кепка", 0);
+            new SimpleProduct("кепка", 0);
         } catch (IllegalArgumentException exception) {
-            System.out.println(exception.getMessage());
+            System.out.println("\n" + exception.getMessage());
         }
 
         try {
-            DiscountedProduct p7 = new DiscountedProduct("    ", 500, 50);
+            new DiscountedProduct("    ", 500, 50);
         } catch (IllegalArgumentException exception) {
-            System.out.println(exception.getMessage());
+            System.out.println("\n" + exception.getMessage());
         }
 
         try {
-            DiscountedProduct p8 = new DiscountedProduct("очки", 3990, 101);
+            new DiscountedProduct("очки", 3990, 101);
         } catch (IllegalArgumentException exception) {
-            System.out.println(exception.getMessage());
+            System.out.println("\n" + exception.getMessage());
         }
 
         // метод поиска самого подходящего элемента
+        Searchable resultSearch;
+
         try {
             searchTerm = "скидки";
-            searchEngine.searchBestMatch(searchTerm);
+            resultSearch = searchEngine.searchBestMatch(searchTerm);
+            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\": " + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
 
         try {
             searchTerm = "скидк";
-            searchEngine.searchBestMatch(searchTerm);
+            resultSearch = searchEngine.searchBestMatch(searchTerm);
+            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\": " + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
 
         try {
             searchTerm = "ФУТБОЛ";
-            searchEngine.searchBestMatch(searchTerm);
+            resultSearch = searchEngine.searchBestMatch(searchTerm);
+            System.out.println("\nРезультат поиска самого подходящего элемента по запросу \"" + searchTerm + "\": " + resultSearch);
         } catch (BestResultNotFound e) {
             System.out.println(e.getMessage());
         }
+
+        List<Product> removedProduct;
+
+        removedProduct = basket2.removeProduct("майка");
+        System.out.println("\nУдалённые продукты: " + removedProduct);
+
+        basket2.printBasket();
+
+        removedProduct = basket2.removeProduct("джинсы");
+        if (removedProduct.isEmpty()) System.out.println("\nСписок удалённых товаров пуст: " + removedProduct);
+
+        basket2.printBasket();
 
     }
 }

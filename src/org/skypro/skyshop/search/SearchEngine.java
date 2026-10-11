@@ -2,52 +2,38 @@ package org.skypro.skyshop.search;
 
 import org.skypro.skyshop.exceptions.BestResultNotFound;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 public class SearchEngine {
 
-    // и актуальное кол-во элементов в массиве,
-    // и кол-во "успешных" вызовов метода add()
-    private int size;
+    private final List<Searchable> list;
 
-    private final Searchable[] array;
-
-    public SearchEngine(int maxSizeArray) {
-        if (maxSizeArray < 0) {
-            System.out.println("Размер массива должен быть неотрицательным");
-            maxSizeArray = 0;
-        }
-        array = new Searchable[maxSizeArray];
+    public SearchEngine() {
+        list = new LinkedList<>();
     }
 
-    public Searchable[] search(String searchTerm) {
+    public List<Searchable> search(String searchTerm) {
         if (searchTerm == null) {
-            System.out.println("Поисковый запрос не должен быть null");
-            return null;
+            throw new IllegalArgumentException("Поисковый запрос не должен быть null");
         }
 
-        int resultCount = 0;
-        Searchable[] resultsSearch = new Searchable[5];
-        for (int i = 0; i < size; i++) {
-            Searchable searchable = array[i];
+        List<Searchable> resultsSearch = new ArrayList<>();
 
-            if (array[i] != null && (searchable.getSearchTerm().toLowerCase()).contains(searchTerm.toLowerCase())) {
-                resultsSearch[resultCount] = array[i];
-                resultCount++;
-            }
-            if (resultCount == resultsSearch.length) {
-                break;
+        for (Searchable searchable : list) {
+            if (searchable != null && (searchable.getSearchTerm().toLowerCase()).contains(searchTerm.toLowerCase())) {
+                resultsSearch.add(searchable);
             }
         }
         return resultsSearch;
     }
 
     public void add(Searchable newSearchable) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == null) {
-                array[i] = newSearchable;
-                size++;
-                return;
-            }
+        if (newSearchable == null) {
+            throw new IllegalArgumentException("Передаваемый объект не может быть null");
         }
+        list.add(newSearchable);
     }
 
     public Searchable searchBestMatch(String search) throws BestResultNotFound {
@@ -55,26 +41,25 @@ public class SearchEngine {
         int maxCount = 0;
         Searchable result = null;
 
-        for (int i = 0; i < size; i++) {
+        for (Searchable searchable : list) {
             int counter = 0;
             int index = 0;
-            int indexSubstring = array[i].getSearchTerm().toLowerCase().indexOf(search, index);
+            int indexSubstring = searchable.getSearchTerm().toLowerCase().indexOf(search, index);
 
             while (indexSubstring != -1) {
                 counter++;
                 index = indexSubstring + search.length();
-                indexSubstring = array[i].getSearchTerm().indexOf(search, index);
+                indexSubstring = searchable.getSearchTerm().indexOf(search, index);
             }
 
             if (counter > maxCount) {
                 maxCount = counter;
-                result = array[i];
+                result = searchable;
             }
         }
         if (result == null) {
             throw new BestResultNotFound("\nПо запросу \"" + search + "\" ничего не найдено");
         }
-        System.out.println("\nРезультат поиска по запросу \"" + search + "\": " + result);
         return result;
     }
 }
