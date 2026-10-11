@@ -1,5 +1,7 @@
 package org.skypro.skyshop.search;
 
+import org.skypro.skyshop.exceptions.BestResultNotFound;
+
 public class SearchEngine {
 
     // и актуальное кол-во элементов в массиве,
@@ -46,5 +48,33 @@ public class SearchEngine {
                 return;
             }
         }
+    }
+
+    public Searchable searchBestMatch(String search) throws BestResultNotFound {
+        search = search.toLowerCase();
+        int maxCount = 0;
+        Searchable result = null;
+
+        for (int i = 0; i < size; i++) {
+            int counter = 0;
+            int index = 0;
+            int indexSubstring = array[i].getSearchTerm().toLowerCase().indexOf(search, index);
+
+            while (indexSubstring != -1) {
+                counter++;
+                index = indexSubstring + search.length();
+                indexSubstring = array[i].getSearchTerm().indexOf(search, index);
+            }
+
+            if (counter > maxCount) {
+                maxCount = counter;
+                result = array[i];
+            }
+        }
+        if (result == null) {
+            throw new BestResultNotFound("\nПо запросу \"" + search + "\" ничего не найдено");
+        }
+        System.out.println("\nРезультат поиска по запросу \"" + search + "\": " + result);
+        return result;
     }
 }

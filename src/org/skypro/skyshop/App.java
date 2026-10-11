@@ -2,6 +2,7 @@ package org.skypro.skyshop;
 
 import org.skypro.skyshop.article.Article;
 import org.skypro.skyshop.basket.ProductBasket;
+import org.skypro.skyshop.exceptions.BestResultNotFound;
 import org.skypro.skyshop.product.DiscountedProduct;
 import org.skypro.skyshop.product.FixPriceProduct;
 import org.skypro.skyshop.product.SimpleProduct;
@@ -98,7 +99,48 @@ public class App {
         System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
 
         searchTerm = "джинс";
-        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)));
+        System.out.println("\nРезультаты поиска по запросу " + searchTerm + ":\n" + Arrays.toString(searchEngine.search(searchTerm)) + "\n");
+
+        // создание новых продуктов с неправильными полями
+        try {
+            SimpleProduct p6 = new SimpleProduct("кепка", 0);
+        } catch (IllegalArgumentException exception) {
+            System.out.println(exception.getMessage());
+        }
+
+        try {
+            DiscountedProduct p7 = new DiscountedProduct("    ", 500, 50);
+        } catch (IllegalArgumentException exception) {
+            System.out.println(exception.getMessage());
+        }
+
+        try {
+            DiscountedProduct p8 = new DiscountedProduct("очки", 3990, 101);
+        } catch (IllegalArgumentException exception) {
+            System.out.println(exception.getMessage());
+        }
+
+        // метод поиска самого подходящего элемента
+        try {
+            searchTerm = "скидки";
+            searchEngine.searchBestMatch(searchTerm);
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            searchTerm = "скидк";
+            searchEngine.searchBestMatch(searchTerm);
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            searchTerm = "ФУТБОЛ";
+            searchEngine.searchBestMatch(searchTerm);
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 }
