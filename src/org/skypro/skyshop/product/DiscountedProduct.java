@@ -24,17 +24,13 @@ public class DiscountedProduct extends Product {
         return (int) result;
     }
 
-    public int getBasePrice() {
-        return basePrice;
+    @Override
+    public boolean isSpecial() {
+        return true;
     }
 
     @Override
     public String toString() {
-        return getName() + ": " + getPrice() + " (" + discountPercentage + "%)";
-    }
-
-    @Override
-    public boolean isSpecial() {
-        return true;
+        return super.toString() + " (" + discountPercentage + "%)";
     }
 }
