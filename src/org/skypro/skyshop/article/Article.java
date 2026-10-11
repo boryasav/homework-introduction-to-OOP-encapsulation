@@ -8,7 +8,7 @@ public class Article implements Searchable {
     private final String text;
 
     public Article(String title, String text) {
-        this.title = title;
+        this.title = title.toUpperCase();
         this.text = text;
     }
 
